@@ -21,7 +21,8 @@ const SCREEN_HEIGHT = 648
 const LEVELS = [
 	\"res://level1.tscn\",
 	\"res://level2.tscn\",
-	\"res://level3.tscn\"
+	\"res://level3.tscn\",
+	\"res://level4.tscn\"
 ]
 
 func get_level(previous: bool) -> String:
@@ -125,28 +126,29 @@ animations = [{
 "speed": 6.0
 }]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_85llr"]
-size = Vector2(72, 90)
+[sub_resource type="ConvexPolygonShape2D" id="ConvexPolygonShape2D_g1tnb"]
+points = PackedVector2Array(-21.5, -23, -21.5, -26, -18.5, -26, -18.5, -29, 41.5, -29, 41.5, -26, 44.5, -26, 44.5, -23, 47.5, -23, 47.5, 61, -24.5, 61, -24.5, -23)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_cms5r"]
-size = Vector2(74, 92)
+[sub_resource type="ConvexPolygonShape2D" id="ConvexPolygonShape2D_pklw6"]
+points = PackedVector2Array(37, -6, 37, 46, -37, 46, -37, -40, -34, -40, -34, -43, -31, -43, -31, -46, 31, -46, 31, -43, 34, -43, 34, -40, 37, -40)
 
 [node name="Player" type="CharacterBody2D" unique_id=1251865424]
 light_mask = 0
 visibility_layer = 2
 z_index = 1
 z_as_relative = false
+safe_margin = 0.5
 script = SubResource("GDScript_85llr")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=2030672107]
 texture_filter = 1
 scale = Vector2(0.75, 0.75)
 sprite_frames = SubResource("SpriteFrames_cms5r")
-frame_progress = 0.21903467
+frame_progress = 0.89951485
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1477210685]
-position = Vector2(0, 3)
-shape = SubResource("RectangleShape2D_85llr")
+position = Vector2(-11.5, -13)
+shape = SubResource("ConvexPolygonShape2D_g1tnb")
 
 [node name="Area2D" type="Area2D" parent="." unique_id=1470399846]
 collision_layer = 0
@@ -154,4 +156,4 @@ collision_mask = 4
 
 [node name="Hitbox" type="CollisionShape2D" parent="Area2D" unique_id=672443007]
 position = Vector2(0, 3)
-shape = SubResource("RectangleShape2D_cms5r")
+shape = SubResource("ConvexPolygonShape2D_pklw6")

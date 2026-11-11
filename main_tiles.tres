@@ -30,13 +30,13 @@ texture_region_size = Vector2i(32, 32)
 texture = ExtResource("3_eds1b")
 texture_region_size = Vector2i(32, 32)
 0:0/0 = 0
-0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-16, -16, -16, -4.0187607, 16, -3.955721, 16, -16)
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-16, -16, -16, -13, -15, -13, -15, -12, -14, -12, -14, -11, -13, -11, -13, -10, -12, -10, -12, -9, -10, -9, -10, -8, 13, -8, 13, -7, -9, -7, -9, -6, 13, -6, 13, -5, -6, -5, -6, -4, 16, -3.955721, 16, -16)
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_3mvhb"]
 texture = ExtResource("4_1f1sf")
 texture_region_size = Vector2i(32, 32)
 0:0/0 = 0
-0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-16, -16, -16, -4.0187607, 16, -3.955721, 16, -16)
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-16, -16, -16, -4.0187607, 6, -4, 6, -5, -13, -5, -13, -6, 9, -6, 9, -7, -13, -7, -13, -8, 10, -8, 10, -9, 12, -9, 12, -10, 13, -10, 13, -11, 14, -11, 14, -12, 15, -12, 15, -13, 16, -13, 16, -16)
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_vfyqy"]
 texture = ExtResource("5_1f1sf")
@@ -59,8 +59,8 @@ texture_region_size = Vector2i(32, 32)
 texture = ExtResource("5_7120m")
 texture_region_size = Vector2i(32, 32)
 0:0/0 = 0
-0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(16, 16, 16, 4.105276, -16, 4.0063534, -16, 16)
-0:0/0/physics_layer_1/polygon_0/points = PackedVector2Array(-16, 4.0063534, -16, 16, 16, 16, 16, 4.105276)
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(16, 16, 16, 7, 15, 7, 15, 6, 14, 6, 14, 5, 12, 5, 12, 4, 4, 4, 4, 5, 2, 5, 2, 6, 1, 6, 1, 7, -1, 7, -1, 8, -2, 8, -2, 9, -4, 9, -4, 10, -12, 10, -12, 9, -14, 9, -14, 8, -15, 8, -15, 7, -16, 7, -16, 16)
+0:0/0/physics_layer_1/polygon_0/points = PackedVector2Array(-16, 7, -16, 16, 16, 16, 16, 7, 15, 7, 15, 6, 14, 6, 14, 5, 12, 5, 12, 4, 4, 4, 4, 5, 2, 5, 2, 6, 1, 6, 1, 7, -1, 7, -1, 8, -2, 8, -2, 9, -4, 9, -4, 10, -12, 10, -12, 9, -14, 9, -14, 8, -15, 8, -15, 7)
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_qnagh"]
 texture = ExtResource("7_7120m")
@@ -73,20 +73,28 @@ texture_region_size = Vector2i(32, 32)
 texture = ExtResource("6_qnagh")
 texture_region_size = Vector2i(32, 32)
 0:0/0 = 0
-0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-16, -16, -16, -3.955721, 16, -3.9872398, 16, -16)
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-16, -16, -16, -13, -15, -13, -15, -12, -14, -12, -14, -11, -13, -11, -13, -10, -12, -10, -12, -9, -10, -9, -10, -8, -9, -8, 10, -8, 10, -9, 12, -9, 12, -10, 13, -10, 13, -11, 14, -11, 14, -12, 15, -12, 15, -13, 16, -13, 16, -16)
+0:0/0/physics_layer_0/polygon_1/points = PackedVector2Array(9, -6, 9, -7, -9, -7, -9, -6)
+0:0/0/physics_layer_0/polygon_2/points = PackedVector2Array(-6, -5, -6, -4, 6, -4, 6, -5)
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_bxd18"]
 texture = ExtResource("10_vfyqy")
 texture_region_size = Vector2i(32, 32)
 0:0/0 = 0
-0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-16, -16, -16, -3.955721, 16, -3.9872398, 16, -16)
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-16, -16, -16, -4, 16, -4, 16, -16)
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_r76ic"]
 texture = ExtResource("11_5316c")
 texture_region_size = Vector2i(32, 32)
 0:0/0 = 0
-0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-16, -16, -16, 16, 16, 16, 16, -16)
-0:0/0/physics_layer_1/polygon_0/points = PackedVector2Array(-16, 4.0187597, -16, 16, 16, 16, 16, 3.9872398)
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-16, 7, -15, 7, -15, 8, -14, 8, -14, 9, -12, 9, -12, 10, -4, 10, -4, 9, -2, 9, -2, 8, -1, 8, -1, 7, 1, 7, 1, 6, 2, 6, 2, 5, 4, 5, 4, 4, 12, 4, 12, 5, 14, 5, 14, 6, 15, 6, 15, 7, 16, 7, 16, 16, -16, 16)
+0:0/0/physics_layer_0/polygon_1/points = PackedVector2Array(-16, -16, -16, -13, -15, -13, -15, -12, -14, -12, -14, -11, -13, -11, -13, -10, -12, -10, -12, -9, -10, -9, -10, -8, 10, -8, 10, -9, 12, -9, 12, -10, 13, -10, 13, -11, 14, -11, 14, -12, 15, -12, 15, -13, 16, -13, 16, -16)
+0:0/0/physics_layer_0/polygon_2/points = PackedVector2Array(-9, -7, -9, -6, 9, -6, 9, -7)
+0:0/0/physics_layer_0/polygon_3/points = PackedVector2Array(-6, -5, -6, -4, 6, -4, 6, -5)
+0:0/0/physics_layer_1/polygon_0/points = PackedVector2Array(-16, -16, -16, -13, -15, -13, -15, -12, -14, -12, -14, -11, -13, -11, -13, -10, -12, -10, -12, -9, -10, -9, -10, -8, 10, -8, 10, -9, 12, -9, 12, -10, 13, -10, 13, -11, 14, -11, 14, -12, 15, -12, 15, -13, 16, -13, 16, -16)
+0:0/0/physics_layer_1/polygon_1/points = PackedVector2Array(-9, -7, -9, -6, 9, -6, 9, -7)
+0:0/0/physics_layer_1/polygon_2/points = PackedVector2Array(-6, -5, -6, -4, 6, -4, 6, -5)
+0:0/0/physics_layer_1/polygon_3/points = PackedVector2Array(-16, 7, -16, 16, 16, 16, 16, 7, 15, 7, 15, 6, 14, 6, 14, 5, 12, 5, 12, 4, 4, 4, 4, 5, 2, 5, 2, 6, 1, 6, 1, 7, -1, 7, -1, 8, -2, 8, -2, 9, -4, 9, -4, 10, -12, 10, -12, 9, -14, 9, -14, 8, -15, 8, -15, 7)
 
 [resource]
 tile_size = Vector2i(32, 32)
