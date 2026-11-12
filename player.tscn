@@ -137,14 +137,13 @@ light_mask = 0
 visibility_layer = 2
 z_index = 1
 z_as_relative = false
-safe_margin = 0.5
 script = SubResource("GDScript_85llr")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=2030672107]
 texture_filter = 1
 scale = Vector2(0.75, 0.75)
 sprite_frames = SubResource("SpriteFrames_cms5r")
-frame_progress = 0.89951485
+frame_progress = 0.8971685
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1477210685]
 position = Vector2(-11.5, -13)
