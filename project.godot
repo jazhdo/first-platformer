@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="First Platformer"
-run/main_scene="uid://ce5vmhf7xx8o3"
+run/main_scene="uid://bgw251o6dqqnm"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 config/icon="res://images/icon.svg"
 
@@ -70,4 +70,3 @@ textures/canvas_textures/default_texture_filter=0
 rendering_device/driver.windows="d3d12"
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
-environment/defaults/default_clear_color=Color(0.24469802, 0.4455412, 0.5933449, 1)

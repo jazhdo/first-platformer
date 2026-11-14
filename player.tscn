@@ -22,8 +22,10 @@ const LEVELS = [
 	\"res://level1.tscn\",
 	\"res://level2.tscn\",
 	\"res://level3.tscn\",
-	\"res://level4.tscn\"
+	\"res://level4.tscn\",
+	\"res://final_level.tscn\"
 ]
+
 
 func get_level(previous: bool) -> String:
 	var current_level: int = LEVELS.find(get_tree().current_scene.scene_file_path)
@@ -34,6 +36,9 @@ func get_level(previous: bool) -> String:
 	return LEVELS[[current_level + 1, current_level, current_level - 1, 0][(int(previous) << 1) | int(current_level == (0 if previous else LEVELS.size() - 1))]]
 
 func _physics_process(delta: float) -> void:
+	if (get_tree().current_scene is not Node2D):
+		return
+	
 	# Add the gravity.
 	if not is_on_floor():
 		velocity += get_gravity() * delta
@@ -61,8 +66,10 @@ func _physics_process(delta: float) -> void:
 		
 
 func _ready() -> void:
-	spawn()
-	$Area2D.body_entered.connect(kill)
+	# Only add game level triggers if in a game level
+	if (get_tree().current_scene is Node2D):
+		spawn()
+		$Area2D.body_entered.connect(kill)
 	$AnimatedSprite2D.play(\"default\")
 
 func spawn() -> void:
@@ -126,11 +133,8 @@ animations = [{
 "speed": 6.0
 }]
 
-[sub_resource type="ConvexPolygonShape2D" id="ConvexPolygonShape2D_g1tnb"]
-points = PackedVector2Array(-21.5, -23, -21.5, -26, -18.5, -26, -18.5, -29, 41.5, -29, 41.5, -26, 44.5, -26, 44.5, -23, 47.5, -23, 47.5, 61, -24.5, 61, -24.5, -23)
-
-[sub_resource type="ConvexPolygonShape2D" id="ConvexPolygonShape2D_pklw6"]
-points = PackedVector2Array(37, -6, 37, 46, -37, 46, -37, -40, -34, -40, -34, -43, -31, -43, -31, -46, 31, -46, 31, -43, 34, -43, 34, -40, 37, -40)
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_vfyqy"]
+size = Vector2(72, 90)
 
 [node name="Player" type="CharacterBody2D" unique_id=1251865424]
 light_mask = 0
@@ -146,13 +150,25 @@ sprite_frames = SubResource("SpriteFrames_cms5r")
 frame_progress = 0.8971685
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1477210685]
-position = Vector2(-11.5, -13)
-shape = SubResource("ConvexPolygonShape2D_g1tnb")
+position = Vector2(0, 3)
+shape = SubResource("RectangleShape2D_vfyqy")
 
 [node name="Area2D" type="Area2D" parent="." unique_id=1470399846]
 collision_layer = 0
 collision_mask = 4
 
-[node name="Hitbox" type="CollisionShape2D" parent="Area2D" unique_id=672443007]
+[node name="HurtBox" type="CollisionPolygon2D" parent="Area2D" unique_id=1228610200]
 position = Vector2(0, 3)
-shape = SubResource("ConvexPolygonShape2D_pklw6")
+polygon = PackedVector2Array(-30, -46, 30, -46, 37, -39, 37, 46, -37, 46, -37, -40)
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=2014050309]
+position = Vector2(-36, -42)
+limit_left = 0
+limit_top = -128
+limit_right = 1152
+limit_bottom = 768
+position_smoothing_enabled = true
+position_smoothing_speed = 2.0
+drag_vertical_enabled = true
+editor_draw_screen = false
+editor_draw_limits = true
