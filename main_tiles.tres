@@ -10,6 +10,7 @@
 [ext_resource type="Texture2D" uid="uid://baxebp1f6qp11" path="res://images/lava.png" id="5_7120m"]
 [ext_resource type="Texture2D" uid="uid://d16i5fla285y5" path="res://images/platform.png" id="6_qnagh"]
 [ext_resource type="Texture2D" uid="uid://7ii0v5d1f07d" path="res://images/lava_block.png" id="7_7120m"]
+[ext_resource type="Texture2D" uid="uid://cy4w20066lsp6" path="res://images/lava_platforms.png" id="9_vfyqy"]
 [ext_resource type="Texture2D" uid="uid://cwb6f4p6fs3yk" path="res://images/platform_center.png" id="10_vfyqy"]
 [ext_resource type="Texture2D" uid="uid://d31c5c8hrmivm" path="res://images/lava_platform.png" id="11_5316c"]
 
@@ -62,6 +63,13 @@ texture_region_size = Vector2i(32, 32)
 0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(16, 16, 16, 7, 15, 7, 15, 6, 14, 6, 14, 5, 12, 5, 12, 4, 4, 4, 4, 5, 2, 5, 2, 6, 1, 6, 1, 7, -1, 7, -1, 8, -2, 8, -2, 9, -4, 9, -4, 10, -12, 10, -12, 9, -14, 9, -14, 8, -15, 8, -15, 7, -16, 7, -16, 16)
 0:0/0/physics_layer_1/polygon_0/points = PackedVector2Array(-16, 6.5, -16, 16, 16, 16, 16, 6.5, 15, 6, 14, 5, 12, 4, 4, 4, 2, 5, 1, 6, -1, 7, -2, 8, -4, 9, -8, 10, -12, 9, -14, 8, -15, 7)
 
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_5316c"]
+texture = ExtResource("9_vfyqy")
+texture_region_size = Vector2i(32, 32)
+0:0/0 = 0
+1:0/0 = 0
+2:0/0 = 0
+
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_qnagh"]
 texture = ExtResource("7_7120m")
 texture_region_size = Vector2i(32, 32)
@@ -108,3 +116,4 @@ sources/9 = SubResource("TileSetAtlasSource_r76ic")
 sources/10 = SubResource("TileSetAtlasSource_rl1m4")
 sources/11 = SubResource("TileSetAtlasSource_3mvhb")
 sources/13 = SubResource("TileSetAtlasSource_vfyqy")
+sources/5 = SubResource("TileSetAtlasSource_5316c")

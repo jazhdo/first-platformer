@@ -8,7 +8,7 @@ script/source = "extends CharacterBody2D
 
 const SPEED = 400.0
 const JUMP_VELOCITY = -550.0
-const NEXT_SCENE = \"res://level2.tscn\"
+const SUPER_JUMP_VELOCITY = -650.0
 
 # Half values for zone calculation
 const WIDTH = 36
@@ -23,6 +23,7 @@ const LEVELS = [
 	\"res://level2.tscn\",
 	\"res://level3.tscn\",
 	\"res://level4.tscn\",
+	\"res://level5.tscn\",
 	\"res://final_level.tscn\"
 ]
 
@@ -36,16 +37,21 @@ func get_level(previous: bool) -> String:
 	return LEVELS[[current_level + 1, current_level, current_level - 1, 0][(int(previous) << 1) | int(current_level == (0 if previous else LEVELS.size() - 1))]]
 
 func _physics_process(delta: float) -> void:
-	if (get_tree().current_scene is not Node2D):
+	if get_tree().current_scene is not Node2D:
 		return
 	
 	# Add the gravity.
 	if not is_on_floor():
 		velocity += get_gravity() * delta
 
-	# Handle jump.
+	# Handle jump & super jump
 	if Input.is_action_just_pressed(\"up\") and is_on_floor():
-		velocity.y = JUMP_VELOCITY
+		velocity.y = SUPER_JUMP_VELOCITY if GameData.settings.get(\"super_jump\") and Input.is_key_pressed(Key.KEY_SHIFT) else JUMP_VELOCITY
+	
+	# Handle level skip cheat code
+	if GameData.settings.get(\"cheat_code\") and are_all_pressed([Key.KEY_E, Key.KEY_R, Key.KEY_END]):
+		GameData.load_direction = false
+		spawn()
 
 	# Get the input direction and handle the movement/deceleration.
 	var direction := Input.get_axis(\"left\", \"right\")
@@ -56,31 +62,32 @@ func _physics_process(delta: float) -> void:
 
 	move_and_slide()
 	
-	if (global_position.x + WIDTH > SCREEN_WIDTH + (WIDTH * 2)):
+	if global_position.x + WIDTH > SCREEN_WIDTH + (WIDTH * 2):
 		get_tree().change_scene_to_file(get_level(false))
 		GameData.load_direction = true
 		
-	if (global_position.x - WIDTH < -(WIDTH * 2)):
+	if global_position.x - WIDTH < -(WIDTH * 2):
 		get_tree().change_scene_to_file(get_level(true))
 		GameData.load_direction = false
 		
 
 func _ready() -> void:
 	# Only add game level triggers if in a game level
-	if (get_tree().current_scene is Node2D):
+	if get_tree().current_scene is Node2D:
 		spawn()
 		$Area2D.body_entered.connect(kill)
-	$AnimatedSprite2D.play(\"default\")
+	if GameData.settings.get(\"player_animation\"): $AnimatedSprite2D.play(\"default\")
 
-func spawn() -> void:
-	if (GameData.load_direction):
-		global_position = get_tree().get_nodes_in_group(\"spawns\")[0].global_position
-	else:
-		global_position = get_tree().get_nodes_in_group(\"spawns\")[1].global_position
+func spawn() -> void: global_position = get_tree().get_nodes_in_group(\"spawns\")[int(!GameData.load_direction)].global_position
 
 func kill(body: Node2D) -> void:
 	await get_tree().create_timer(0.05).timeout
 	spawn()
+
+func are_all_pressed(key_array: Array[Key]) -> bool:
+	for key: Key in key_array:
+		if (!Input.is_key_pressed(key)): return false
+	return true
 "
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_onrkg"]

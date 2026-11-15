@@ -6,19 +6,69 @@
 [sub_resource type="GDScript" id="GDScript_cms5r"]
 script/source = "extends Control
 
+enum Menu {
+	SETTINGS,
+	CREDITS,
+	HELP
+}
+var menus: Array[int] = []
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	$PlayButton.pressed.connect(_on_button_pressed)
+	$PlayButton.pressed.connect(play)
+	
+	# Popup toggle buttons
+	$SettingsButton.pressed.connect(func(): show_first_menu(Menu.SETTINGS))
+	$CreditsButton.pressed.connect(func(): show_first_menu(Menu.CREDITS))
+	$HelpButton.pressed.connect(func(): show_first_menu(Menu.HELP))
+	
+	# Menu back button
+	$PopupBackground/Popup/BackButton.pressed.connect(
+		func():
+			match menus.size():
+				0: return
+				1: hide_menu()
+				_:
+					var latest_page: int = menus.size() - 1
+					var latest_page_node: Control = $PopupBackground/Popup/Pages.get_child(menus.get(latest_page))
+					latest_page_node.hide()
+					print(\"Hiding Node: \", latest_page_node)
+					menus.remove_at(latest_page)
+					show_menu(menus[-1])
+	)
+	
+	# Settings menu toggles' defaults
+	$PopupBackground/Popup/Pages/Settings/CheatCode.set_pressed_no_signal(GameData.settings.get(\"cheat_code\"))
+	$PopupBackground/Popup/Pages/Settings/SuperJump.set_pressed_no_signal(GameData.settings.get(\"super_jump\"))
+	$PopupBackground/Popup/Pages/Settings/PlayerAnimation.set_pressed_no_signal(GameData.settings.get(\"player_animation\"))
+	
+	# Settings menu toggles' listeners
+	$PopupBackground/Popup/Pages/Settings/CheatCode.toggled.connect(func(toggled_on: bool): GameData.settings.set(\"cheat_code\", toggled_on))
+	$PopupBackground/Popup/Pages/Settings/SuperJump.toggled.connect(func(toggled_on: bool): GameData.settings.set(\"super_jump\", toggled_on))
+	$PopupBackground/Popup/Pages/Settings/SuperJump.toggled.connect(func(toggled_on: bool): GameData.settings.set(\"player_animation\", toggled_on))
+func show_first_menu(which: int) -> void:
+	menus.push_back(which)
+	show_menu(which)
+func show_menu(which: int) -> void:
+	if (!$PopupBackground.visible): $PopupBackground.show()
+	var page_node: Control = $PopupBackground/Popup/Pages.get_child(which)
+	page_node.show()
+func change_menu() -> void:
+	pass
+func hide_menu() -> void:
+	menus.clear()
+	for node: Control in $PopupBackground/Popup/Pages.get_children(false):
+		node.hide()
+	$PopupBackground.hide()
 
+func _unhandled_key_input(event: InputEvent) -> void:
+	play()
+func play() -> void:
+	get_tree().change_scene_to_file(\"res://level1.tscn\")
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	pass
-
-
-func _on_button_pressed() -> void:
-	get_tree().change_scene_to_file(\"res://level1.tscn\")
 "
 
 [sub_resource type="SystemFont" id="SystemFont_cms5r"]
@@ -29,6 +79,25 @@ font_size = 67
 font_color = Color(0, 0, 0, 1)
 outline_color = Color(0, 0, 0, 1)
 shadow_size = 0
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_85llr"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_85llr"]
+bg_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 40
+corner_radius_top_right = 40
+corner_radius_bottom_right = 40
+corner_radius_bottom_left = 40
+corner_detail = 15
+anti_aliasing = false
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cms5r"]
+resource_local_to_scene = true
+bg_color = Color(0.5033745, 0.5033746, 0.5033746, 1)
+corner_radius_top_left = 18
+corner_radius_top_right = 18
+corner_radius_bottom_right = 18
+corner_radius_bottom_left = 18
 
 [node name="MenuRoot" type="Control" unique_id=2099476841]
 layout_mode = 3
@@ -59,9 +128,9 @@ anchor_top = 0.298
 anchor_right = 0.5
 anchor_bottom = 0.298
 offset_left = -320.0
-offset_top = -46.104004
+offset_top = -15.104004
 offset_right = 322.0
-offset_bottom = 45.895996
+offset_bottom = 76.895996
 grow_horizontal = 2
 grow_vertical = 2
 text = "A Lonely Platformer"
@@ -75,9 +144,9 @@ anchor_top = 0.39400002
 anchor_right = 0.5
 anchor_bottom = 0.39400002
 offset_left = -95.0
-offset_top = -17.312012
+offset_top = 13.687988
 offset_right = 95.0
-offset_bottom = 17.687988
+offset_bottom = 48.68799
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 25
 text = "Made by Jazhdo"
@@ -86,13 +155,13 @@ text = "Made by Jazhdo"
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.5
-anchor_top = 0.772
+anchor_top = 0.656
 anchor_right = 0.5
-anchor_bottom = 0.772
+anchor_bottom = 0.656
 offset_left = -120.0
-offset_top = -32.256012
+offset_top = -32.088013
 offset_right = 120.0
-offset_bottom = 31.743988
+offset_bottom = 31.911987
 grow_horizontal = 2
 grow_vertical = 2
 mouse_default_cursor_shape = 2
@@ -105,3 +174,246 @@ theme_override_styles/pressed = ExtResource("2_7vrkn")
 theme_override_styles/hover = ExtResource("2_7vrkn")
 action_mode = 0
 text = "Play"
+
+[node name="CreditsButton" type="Button" parent="." unique_id=337516157]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.104
+anchor_top = 0.95100003
+anchor_right = 0.104
+anchor_bottom = 0.95100003
+offset_left = -119.808
+offset_top = -32.248047
+offset_right = 120.192
+offset_bottom = 31.751953
+grow_horizontal = 2
+grow_vertical = 2
+mouse_default_cursor_shape = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_pressed_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 32
+theme_override_styles/normal = ExtResource("1_06t4h")
+theme_override_styles/pressed = ExtResource("2_7vrkn")
+theme_override_styles/hover = ExtResource("2_7vrkn")
+action_mode = 0
+text = "Credits"
+
+[node name="SettingsButton" type="Button" parent="." unique_id=926024081]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.896
+anchor_top = 0.95100003
+anchor_right = 0.896
+anchor_bottom = 0.95100003
+offset_left = -120.19202
+offset_top = -32.248047
+offset_right = 119.80798
+offset_bottom = 31.751953
+grow_horizontal = 2
+grow_vertical = 2
+mouse_default_cursor_shape = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_pressed_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 32
+theme_override_styles/normal = ExtResource("1_06t4h")
+theme_override_styles/pressed = ExtResource("2_7vrkn")
+theme_override_styles/hover = ExtResource("2_7vrkn")
+action_mode = 0
+text = "Settings"
+
+[node name="HelpButton" type="Button" parent="." unique_id=1835607840]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.896
+anchor_top = 0.049000002
+anchor_right = 0.896
+anchor_bottom = 0.049000002
+offset_left = -120.19202
+offset_top = -31.752
+offset_right = 119.80798
+offset_bottom = 32.248
+grow_horizontal = 2
+grow_vertical = 2
+mouse_default_cursor_shape = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_pressed_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 32
+theme_override_styles/normal = ExtResource("1_06t4h")
+theme_override_styles/pressed = ExtResource("2_7vrkn")
+theme_override_styles/hover = ExtResource("2_7vrkn")
+action_mode = 0
+text = "Help"
+
+[node name="PopupBackground" type="Button" parent="." unique_id=237467224]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -576.0
+offset_top = -324.0
+offset_right = 576.0
+offset_bottom = 324.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Popup" type="Panel" parent="PopupBackground" unique_id=1600650286]
+material = SubResource("CanvasItemMaterial_85llr")
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -544.0
+offset_top = -292.0
+offset_right = 544.0
+offset_bottom = 292.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_85llr")
+
+[node name="BackButton" type="Button" parent="PopupBackground/Popup" unique_id=1179961146]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.066
+anchor_top = 0.068
+anchor_right = 0.066
+anchor_bottom = 0.068
+offset_left = -47.808
+offset_top = -15.712002
+offset_right = 48.192
+offset_bottom = 16.287998
+theme_override_styles/normal = SubResource("StyleBoxFlat_cms5r")
+text = "← Back"
+
+[node name="Pages" type="CenterContainer" parent="PopupBackground/Popup" unique_id=1472577900]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.54800004
+anchor_right = 0.5
+anchor_bottom = 0.54800004
+offset_left = -512.0
+offset_top = -224.03201
+offset_right = 512.0
+offset_bottom = 223.96799
+
+[node name="Settings" type="Control" parent="PopupBackground/Popup/Pages" unique_id=1919844400]
+visible = false
+layout_mode = 2
+
+[node name="Title" type="Label" parent="PopupBackground/Popup/Pages/Settings" unique_id=93114219]
+layout_mode = 0
+offset_left = -512.0
+offset_top = -224.0
+offset_right = -357.0
+offset_bottom = -169.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 40
+text = "Settings"
+
+[node name="CheatCode" type="CheckButton" parent="PopupBackground/Popup/Pages/Settings" unique_id=599271390]
+layout_mode = 0
+offset_left = -512.0
+offset_top = -169.0
+offset_right = -315.0
+offset_bottom = -124.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_pressed_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 27
+theme_override_colors/button_checked_color = Color(0, 1, 0, 1)
+theme_override_colors/button_unchecked_color = Color(1, 0, 0, 1)
+action_mode = 0
+text = "Cheat Code"
+
+[node name="SuperJump" type="CheckButton" parent="PopupBackground/Popup/Pages/Settings" unique_id=558902690]
+layout_mode = 0
+offset_left = -512.0
+offset_top = -136.0
+offset_right = -315.0
+offset_bottom = -91.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_pressed_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 27
+theme_override_colors/button_checked_color = Color(0, 1, 0, 1)
+theme_override_colors/button_unchecked_color = Color(1, 0, 0, 1)
+action_mode = 0
+text = "Super Jump"
+
+[node name="PlayerAnimation" type="CheckButton" parent="PopupBackground/Popup/Pages/Settings" unique_id=1268569743]
+layout_mode = 0
+offset_left = -512.0
+offset_top = -104.0
+offset_right = -315.0
+offset_bottom = -59.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_pressed_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 27
+theme_override_colors/button_checked_color = Color(0, 1, 0, 1)
+theme_override_colors/button_unchecked_color = Color(1, 0, 0, 1)
+action_mode = 0
+text = "Player Animation"
+
+[node name="Credits" type="Control" parent="PopupBackground/Popup/Pages" unique_id=882024648]
+visible = false
+layout_mode = 2
+
+[node name="Title" type="Label" parent="PopupBackground/Popup/Pages/Credits" unique_id=392220063]
+layout_mode = 0
+offset_left = -512.0
+offset_top = -224.0
+offset_right = -375.0
+offset_bottom = -169.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 40
+text = "Credits"
+
+[node name="Text" type="Label" parent="PopupBackground/Popup/Pages/Credits" unique_id=1568480905]
+layout_mode = 0
+offset_left = -512.0
+offset_top = -160.0
+offset_right = 512.0
+offset_bottom = 96.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+text = "Made by Jazhdo for Terra Week 4.
+All image assets are made by me.
+No AI involved."
+
+[node name="Help" type="Control" parent="PopupBackground/Popup/Pages" unique_id=1980110121]
+visible = false
+layout_mode = 2
+
+[node name="Title" type="Label" parent="PopupBackground/Popup/Pages/Help" unique_id=1783772773]
+layout_mode = 0
+offset_left = -512.0
+offset_top = -224.0
+offset_right = -423.0
+offset_bottom = -169.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 40
+text = "Help"
+
+[node name="Text" type="Label" parent="PopupBackground/Popup/Pages/Help" unique_id=1780026688]
+layout_mode = 0
+offset_left = -512.0
+offset_top = -160.0
+offset_right = 512.0
+offset_bottom = 96.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+text = "If you need help jumping, you can press E+R+END to jump higher.
+If you are just testing and cannot get past a level, hold Ctrl+Alt+Meta+Left+Up+Right to skip the level."
