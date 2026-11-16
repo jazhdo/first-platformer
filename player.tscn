@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://bo7jf4bwe17vu"]
 
 [ext_resource type="Texture2D" uid="uid://4lh7jjcvv5h3" path="res://images/new_player_spritesheet.png" id="1_4flbx"]
+[ext_resource type="StyleBox" uid="uid://bk7t8unef00tv" path="res://respawn_button.tres" id="2_onrkg"]
 
 [sub_resource type="GDScript" id="GDScript_85llr"]
 script/source = "extends CharacterBody2D
@@ -18,32 +19,45 @@ const HEIGHT = 45
 const SCREEN_WIDTH = 1152
 const SCREEN_HEIGHT = 648
 
-const LEVELS = [
-	\"res://level1.tscn\",
-	\"res://level2.tscn\",
-	\"res://level3.tscn\",
-	\"res://level4.tscn\",
-	\"res://level5.tscn\",
-	\"res://final_level.tscn\"
+class Level:
+	var name: String
+	var path: String
+	
+	func _init(name: String, path: String = \"res://level\" + name + \".tscn\") -> void:
+		self.name = name
+		self.path = path
+
+var LEVELS: Array[Level] = [
+	Level.new(\"1\"),
+	Level.new(\"2\"),
+	Level.new(\"3\"),
+	Level.new(\"4\"),
+	Level.new(\"5\"),
+	Level.new(\"Win\", \"res://final_level.tscn\")
 ]
 
+enum State {
+	DEAD,
+	ALIVE
+}
+var state = State.ALIVE
 
 func get_level(previous: bool) -> String:
-	var current_level: int = LEVELS.find(get_tree().current_scene.scene_file_path)
+	var current_level: int = LEVELS.find_custom(func(item): return item.path == get_tree().current_scene.scene_file_path)
 	if (current_level == -1):
 		print(\"ERROR: Level \" + get_tree().current_scene.scene_file_path + \" not found.\")
-		return LEVELS[0]
+		return LEVELS[0].path
 	
-	return LEVELS[[current_level + 1, current_level, current_level - 1, 0][(int(previous) << 1) | int(current_level == (0 if previous else LEVELS.size() - 1))]]
+	return LEVELS[[current_level + 1, current_level, current_level - 1, 0][(int(previous) << 1) | int(current_level == (0 if previous else LEVELS.size() - 1))]].path
 
 func _physics_process(delta: float) -> void:
-	if get_tree().current_scene is not Node2D:
+	if state == State.DEAD or get_tree().current_scene is not Node2D:
 		return
 	
 	# Add the gravity.
 	if not is_on_floor():
 		velocity += get_gravity() * delta
-
+	
 	# Handle jump & super jump
 	if Input.is_action_just_pressed(\"up\") and is_on_floor():
 		velocity.y = SUPER_JUMP_VELOCITY if GameData.settings.get(\"super_jump\") and Input.is_key_pressed(Key.KEY_SHIFT) else JUMP_VELOCITY
@@ -52,14 +66,14 @@ func _physics_process(delta: float) -> void:
 	if GameData.settings.get(\"cheat_code\") and are_all_pressed([Key.KEY_E, Key.KEY_R, Key.KEY_END]):
 		GameData.load_direction = false
 		spawn()
-
+	
 	# Get the input direction and handle the movement/deceleration.
 	var direction := Input.get_axis(\"left\", \"right\")
 	if direction:
 		velocity.x = direction * SPEED
 	else:
 		velocity.x = move_toward(velocity.x, 0, SPEED)
-
+	
 	move_and_slide()
 	
 	if global_position.x + WIDTH > SCREEN_WIDTH + (WIDTH * 2):
@@ -76,18 +90,38 @@ func _ready() -> void:
 	if get_tree().current_scene is Node2D:
 		spawn()
 		$Area2D.body_entered.connect(kill)
-	if GameData.settings.get(\"player_animation\"): $AnimatedSprite2D.play(\"default\")
+	if GameData.settings.get(\"player_animation\"): $Animation.play(\"default\")
+	
+	$Overlay/DeathScreen/RespawnButton.pressed.connect(respawn)
+	
+	$Overlay/Info/Level.text = \"Level: \" + LEVELS[LEVELS.find_custom(func(item): return item.path == get_tree().current_scene.scene_file_path)].name
 
-func spawn() -> void: global_position = get_tree().get_nodes_in_group(\"spawns\")[int(!GameData.load_direction)].global_position
+func spawn() -> void:
+	global_position = get_tree().get_nodes_in_group(\"spawns\")[int(!GameData.load_direction)].global_position
 
 func kill(body: Node2D) -> void:
+	state = State.DEAD
 	await get_tree().create_timer(0.05).timeout
+	$Animation.pause()
+	$Overlay/DeathScreen.show()
+
+func respawn() -> void:
+	$Overlay/DeathScreen.hide()
 	spawn()
+	$Animation.play(\"default\")
+	state = State.ALIVE
 
 func are_all_pressed(key_array: Array[Key]) -> bool:
 	for key: Key in key_array:
-		if (!Input.is_key_pressed(key)): return false
+		if not Input.is_key_pressed(key): return false
 	return true
+func are_any_pressed(key_array: Array[Key]) -> bool:
+	for key: Key in key_array:
+		if Input.is_key_pressed(key): return true
+	return false
+
+func _unhandled_key_input(event: InputEvent) -> void:
+	if state == State.DEAD and are_any_pressed([Key.KEY_ENTER, Key.KEY_SPACE]): respawn()
 "
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_onrkg"]
@@ -150,7 +184,7 @@ z_index = 1
 z_as_relative = false
 script = SubResource("GDScript_85llr")
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=2030672107]
+[node name="Animation" type="AnimatedSprite2D" parent="." unique_id=2030672107]
 texture_filter = 1
 scale = Vector2(0.75, 0.75)
 sprite_frames = SubResource("SpriteFrames_cms5r")
@@ -169,7 +203,6 @@ position = Vector2(0, 3)
 polygon = PackedVector2Array(-30, -46, 30, -46, 37, -39, 37, 46, -37, 46, -37, -40)
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=2014050309]
-position = Vector2(-36, -42)
 limit_left = 0
 limit_top = -128
 limit_right = 1152
@@ -179,3 +212,56 @@ position_smoothing_speed = 2.0
 drag_vertical_enabled = true
 editor_draw_screen = false
 editor_draw_limits = true
+
+[node name="Overlay" type="CanvasLayer" parent="." unique_id=1759607399]
+
+[node name="DeathScreen" type="ColorRect" parent="Overlay" unique_id=985171971]
+visible = false
+top_level = true
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.35719082, 0.35719085, 0.3571908, 0.53333336)
+
+[node name="Title" type="Label" parent="Overlay/DeathScreen" unique_id=523105102]
+layout_mode = 0
+offset_left = 437.0
+offset_top = 256.0
+offset_right = 713.0
+offset_bottom = 339.0
+theme_override_font_sizes/font_size = 60
+text = "You Died."
+horizontal_alignment = 1
+
+[node name="RespawnButton" type="Button" parent="Overlay/DeathScreen" unique_id=1610605160]
+layout_mode = 0
+offset_left = 508.0
+offset_top = 340.0
+offset_right = 644.0
+offset_bottom = 391.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_pressed_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 22
+theme_override_styles/normal = ExtResource("2_onrkg")
+theme_override_styles/pressed = ExtResource("2_onrkg")
+theme_override_styles/hover = ExtResource("2_onrkg")
+text = "Respawn"
+
+[node name="Info" type="Control" parent="Overlay" unique_id=898615416]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 1152.0
+offset_bottom = 648.0
+
+[node name="Level" type="Label" parent="Overlay/Info" unique_id=1320231467]
+layout_mode = 0
+offset_left = 522.0
+offset_right = 630.0
+offset_bottom = 42.0
+theme_override_font_sizes/font_size = 30
+text = "Level: 1"

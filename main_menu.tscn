@@ -416,4 +416,5 @@ offset_right = 512.0
 offset_bottom = 96.0
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 text = "If you need help jumping, you can press E+R+END to jump higher.
-If you are just testing and cannot get past a level, hold Ctrl+Alt+Meta+Left+Up+Right to skip the level."
+If you are just testing and cannot get past a level, hold Ctrl+Alt+Meta+Left+Up+Right to skip the level.
+The keyboard shortcut for clicking the respawn button is Space or Enter."
