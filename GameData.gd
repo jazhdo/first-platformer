@@ -6,5 +6,6 @@ var load_direction: bool = true
 var settings: Dictionary = {
 	"cheat_code": true,
 	"super_jump": false,
-	"player_animation": true
+	"player_animation": true,
+	"instant_respawn": false
 }
